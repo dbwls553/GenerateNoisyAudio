@@ -1,6 +1,7 @@
 import get_signal_to_noise as stn
 from math import sqrt
 
+
 def calc_snr(signal, noise):
     """
     Calculate signal noise ratio.
@@ -10,6 +11,7 @@ def calc_snr(signal, noise):
     """
 
     pass
+
 
 def calc_ssnr(signal, noise, frame_size):
     """
@@ -22,6 +24,18 @@ def calc_ssnr(signal, noise, frame_size):
 
     pass
 
+def calc_power(input):
+    """
+    Calculate power of input.
+    :param input: (list)
+    :return: (value)
+    """
+    sum = 0
+    for n in input:
+        sum += pow(n, 2)
+    return sum / len(input)
+
+
 def change_power(input, power):
     """
     Change input power.
@@ -29,19 +43,14 @@ def change_power(input, power):
     :param power: (value)
     :return: (list)
     """
+    input_power = calc_power(input)
+    ratio = sqrt(power/input_power)
+
     output = input.copy()
-    ratio = 1
-    while 1:
-        POWER = 0
-        for i in range(len(input)):
-            POWER += pow(ratio * output[i], 2) / len(input)
-
-        if (POWER > 0.9) & (POWER < 1.1):
-            break
-        else:
-            ratio = sqrt(power / POWER)
-
+    for i in range(len(input)):
+        output[i] = input[i]*ratio
     return output
+
 
 def mix_noise(signal, noise, dB, snr_or_ssnr='snr', frame_size=None):
     """
@@ -53,5 +62,9 @@ def mix_noise(signal, noise, dB, snr_or_ssnr='snr', frame_size=None):
     :param frame_size:  (int) only use in ssnr
     :return: (list)
     """
-
-    pass
+    if snr_or_ssnr == 'snr':
+        pass
+    elif snr_or_ssnr == 'ssnr':
+        pass
+    else:
+        raise Exception("ERROR: You must select only in range of snr or ssnr.")
