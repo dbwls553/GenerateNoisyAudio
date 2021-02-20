@@ -2,10 +2,10 @@ import os
 import io_function as iof
 import signal_processing as sp
 
-input_file_dir = './input'
-noise_file_dir = './noise'
-output_file_dir = './output'
-snr_or_ssnr = 'snr'
+input_file_dir = 'C:/Users/유정찬/Desktop/test/clean_test'
+noise_file_dir = 'C:/Users/유정찬/Desktop/test/noise'
+output_file_dir = 'C:/Users/유정찬/Desktop/test/noisy_test'
+snr_or_ssnr = 'ssnr'
 target_dB = 10
 frame_size = 1600
 
@@ -32,7 +32,11 @@ if len(noise_file_list)==0:
 old_sample_rate = 0
 temp_sample_rate = 0
 noise_signal_train = []
+print('Processing noise file.')
+i = 0
 for wav_file in noise_file_list:
+    i += 1
+    print('Processing({}) {}/{} ...'.format(wav_file, i, len(noise_file_list)))
     temp_noise_signal, temp_sample_rate = iof.read_wav(wav_file)
     if old_sample_rate != 0 and old_sample_rate != temp_sample_rate:
         raise Exception("ERROR: Different sample rate is exist.")
@@ -47,7 +51,11 @@ for wav_file in noise_file_list:
 old_sample_rate = 0
 temp_sample_rate = 0
 noise_start_point = 0
+print('Generate noisy file.')
+i = 0
 for wav_file in input_file_list:
+    i += 1
+    print('Processing({}) {}/{} ...'.format(wav_file, i, len(input_file_list)))
     temp_input_signal, temp_sample_rate = iof.read_wav(wav_file)
     if old_sample_rate != 0 and old_sample_rate != temp_sample_rate:
         raise Exception("ERROR: Different sample rate is exist.")

@@ -22,22 +22,24 @@ def calc_ssnr(signal, noise, frame_size, select=None):
     """
     Calculate segmental signal noise ratio.
     If file is not noisy then SNR is about 100dB.
+    If select is not None, it will return SSNR and list of (signal^2/noise^2).
     :param signal: (list)
     :param noise: (list)
     :param frame_size: (int) ssnr frame size
+    :param select: None or else
     :return: (value) SSNR(dB)
     """
     if len(signal) != len(noise):
-        raise Exception("ERROR: Signal Noise size mismatch")
+        raise Exception("ERROR: Signal noise size mismatch")
     number_of_frame_size = ceil(len(signal) / frame_size)
     sum = 0
     nonzero_frame_number = 0
-    segmental_signal_power = [0] * range(number_of_frame_size)
-    segmental_noise_power = [0] * range(number_of_frame_size)
-    segmental_signal_to_noise = [0] * range(number_of_frame_size)
+    segmental_signal_power = [0] * number_of_frame_size
+    segmental_noise_power = [0] * number_of_frame_size
+    segmental_signal_to_noise = [0] * number_of_frame_size
     for i in range(number_of_frame_size):
-        segmental_signal_power[i] = calc_power(signal[frame_size*i:frame_size*(i+1)])
-        segmental_noise_power[i] = calc_power(noise[frame_size*i:frame_size*(i+1)])
+        segmental_signal_power[i] = calc_power(signal[frame_size * i:frame_size * (i + 1)])
+        segmental_noise_power[i] = calc_power(noise[frame_size * i:frame_size * (i + 1)])
         if segmental_noise_power[i] == 0:
             segmental_noise_power[i] = pow(0.1, 10)
         if segmental_signal_power[i] != 0:
@@ -45,10 +47,11 @@ def calc_ssnr(signal, noise, frame_size, select=None):
             sum += 10 * log10(segmental_signal_power[i] / segmental_noise_power[i])
             segmental_signal_to_noise[i] = segmental_signal_power[i] / segmental_noise_power[i]
     ssnr = sum / nonzero_frame_number
-    if select == None:
+    if not select:
         return ssnr
     else:
         return ssnr, segmental_signal_to_noise
+
 
 def calc_power(input):
     """
@@ -70,11 +73,11 @@ def change_power(input, power):
     :return: (list)
     """
     input_power = calc_power(input)
-    ratio = sqrt(power/input_power)
+    ratio = sqrt(power / input_power)
 
     output = input.copy()
     for i in range(len(input)):
-        output[i] = input[i]*ratio
+        output[i] = input[i] * ratio
     return output
 
 
@@ -93,20 +96,20 @@ def mix_noise(signal, noise, dB, snr_or_ssnr='snr', frame_size=None):
 
     if snr_or_ssnr == 'snr':
         snr = calc_snr(signal, noise)
-        ratio = pow(10, (snr-dB)/20)
+        ratio = pow(10, (snr - dB) / 20)
         noisy_signal = noise.copy()
         for i in range(len(noise)):
-            noisy_signal[i] = noise[i]*ratio + signal[i]
+            noisy_signal[i] = noise[i] * ratio + signal[i]
         return noisy_signal
 
     elif snr_or_ssnr == 'ssnr':
         ssnr, segmental_signal_to_noise = calc_ssnr(signal, noise, frame_size, 1)
-        ratio = [1]*len(segmental_signal_to_noise)
+        ratio = [1] * len(segmental_signal_to_noise)
         noisy_signal = noise.copy()
         for i in range(len(segmental_signal_to_noise)):
-            ratio[i] = pow(segmental_signal_to_noise[i], (ssnr-dB)/(2*ssnr))
+            ratio[i] = pow(segmental_signal_to_noise[i], (ssnr - dB) / (2 * ssnr))
             for j in range(frame_size):
-                noisy_signal[frame_size*i + j] = noise[frame_size*i + j]*ratio[i] + signal[frame_size*i + j]
+                noisy_signal[frame_size * i + j] = noise[frame_size * i + j] * ratio[i] + signal[frame_size * i + j]
         return noisy_signal
 
     else:
