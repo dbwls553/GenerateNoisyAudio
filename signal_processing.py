@@ -22,7 +22,7 @@ def calc_ssnr(signal, noise, frame_size, select=None):
     """
     Calculate segmental signal noise ratio.
     If file is not noisy then SNR is about 100dB.
-    If select is not None, it will return SSNR and list of (signal^2/noise^2).
+    If select is not None, it will return SSNR and list of (signal^2/noise^2) of each segment.
     :param signal: (list)
     :param noise: (list)
     :param frame_size: (int) ssnr frame size
