@@ -38,8 +38,12 @@ def calc_ssnr(signal, noise, frame_size, select=None):
     segmental_noise_power = [0] * number_of_frame_size
     segmental_signal_to_noise = [0] * number_of_frame_size
     for i in range(number_of_frame_size):
-        segmental_signal_power[i] = calc_power(signal[frame_size * i:frame_size * (i + 1)])
-        segmental_noise_power[i] = calc_power(noise[frame_size * i:frame_size * (i + 1)])
+        if i == number_of_frame_size - 1:
+            segmental_signal_power[i] = calc_power(signal[frame_size * i:])
+            segmental_noise_power[i] = calc_power(noise[frame_size * i:])
+        else:
+            segmental_signal_power[i] = calc_power(signal[frame_size * i:frame_size * (i + 1)])
+            segmental_noise_power[i] = calc_power(noise[frame_size * i:frame_size * (i + 1)])
         if segmental_noise_power[i] == 0:
             segmental_noise_power[i] = pow(0.1, 10)
         if segmental_signal_power[i] != 0:
@@ -103,13 +107,19 @@ def mix_noise(signal, noise, dB, snr_or_ssnr='snr', frame_size=None):
         return noisy_signal
 
     elif snr_or_ssnr == 'ssnr':
+        if frame_size == None:
+            raise Exception("ERROR: ssnr must have frame_size")
         ssnr, segmental_signal_to_noise = calc_ssnr(signal, noise, frame_size, 1)
         ratio = [1] * len(segmental_signal_to_noise)
         noisy_signal = noise.copy()
         for i in range(len(segmental_signal_to_noise)):
             ratio[i] = pow(segmental_signal_to_noise[i], (ssnr - dB) / (2 * ssnr))
-            for j in range(frame_size):
-                noisy_signal[frame_size * i + j] = noise[frame_size * i + j] * ratio[i] + signal[frame_size * i + j]
+            if i == len(segmental_signal_to_noise) - 1:
+                for j in range(len(noise[frame_size * i:])):
+                    noisy_signal[frame_size * i + j] = noise[frame_size * i + j] * ratio[i] + signal[frame_size * i + j]
+            else:
+                for j in range(frame_size):
+                    noisy_signal[frame_size * i + j] = noise[frame_size * i + j] * ratio[i] + signal[frame_size * i + j]
         return noisy_signal
 
     else:
