@@ -73,8 +73,8 @@ for wav_file in input_file_list:
         if noise_start_point == len(noise_signal_train):
             noise_start_point = 0
 
-    mixed_signal = sp.new_mix_noise(temp_input_signal, temp_noise_signal, target_dB, snr_or_ssnr, frame_size)
+    mixed_signal = sp.mix_noise(temp_input_signal, temp_noise_signal, target_dB, snr_or_ssnr, frame_size)
 
     temp_output_file_dir = wav_file.replace(input_file_dir, output_file_dir)
-    iof.createFolder(os.path.dirname(temp_output_file_dir))
+    iof.create_folder(os.path.dirname(temp_output_file_dir))
     iof.write_wav(mixed_signal, temp_output_file_dir, temp_sample_rate)

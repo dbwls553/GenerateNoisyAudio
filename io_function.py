@@ -3,7 +3,15 @@ import numpy as np
 import warnings
 import soundfile as sf
 
-def createFolder(directory):
+
+def load_path():
+    path = os.path.join(os.path.dirname(__file__))
+    if path == "":
+        path = "."
+    return path
+
+
+def create_folder(directory):
     try:
         if not os.path.exists(directory):
             os.makedirs(directory)
