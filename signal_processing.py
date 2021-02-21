@@ -18,15 +18,13 @@ def calc_snr(signal, noise):
     return 10 * log10(signal_power / noise_power)
 
 
-def calc_ssnr(signal, noise, frame_size, select=None):
+def calc_ssnr(signal, noise, frame_size):
     """
     Calculate segmental signal noise ratio.
     If file is not noisy then SNR is about 100dB.
-    If select is not None, it will return SSNR and list of (signal^2/noise^2) of each segment.
     :param signal: (list)
     :param noise: (list)
     :param frame_size: (int) ssnr frame size
-    :param select: None or else
     :return: (value) SSNR(dB)
     """
     if len(signal) != len(noise):
@@ -36,7 +34,6 @@ def calc_ssnr(signal, noise, frame_size, select=None):
     nonzero_frame_number = 0
     segmental_signal_power = [0] * number_of_frame_size
     segmental_noise_power = [0] * number_of_frame_size
-    segmental_signal_to_noise = [0] * number_of_frame_size
     for i in range(number_of_frame_size):
         if i == number_of_frame_size - 1:
             segmental_signal_power[i] = calc_power(signal[frame_size * i:])
@@ -49,12 +46,9 @@ def calc_ssnr(signal, noise, frame_size, select=None):
         if segmental_signal_power[i] != 0:
             nonzero_frame_number += 1
             sum += 10 * log10(segmental_signal_power[i] / segmental_noise_power[i])
-            segmental_signal_to_noise[i] = segmental_signal_power[i] / segmental_noise_power[i]
     ssnr = sum / nonzero_frame_number
-    if not select:
-        return ssnr
-    else:
-        return ssnr, segmental_signal_to_noise
+
+    return ssnr
 
 
 def calc_power(input):
@@ -120,6 +114,41 @@ def mix_noise(signal, noise, dB, snr_or_ssnr='snr', frame_size=None):
             else:
                 for j in range(frame_size):
                     noisy_signal[frame_size * i + j] = noise[frame_size * i + j] * ratio[i] + signal[frame_size * i + j]
+        return noisy_signal
+
+    else:
+        raise Exception("ERROR: You must select only in range of snr or ssnr.")
+
+
+def new_mix_noise(signal, noise, dB, snr_or_ssnr='snr', frame_size=None):
+    """
+    Mix noise to signal with specified dB. dB can be SNR or SSNR.
+    :param signal: (list)
+    :param noise: (list)
+    :param dB: (value)
+    :param snr_or_ssnr: 'snr' or 'ssnr'
+    :param frame_size:  (int) only use in ssnr
+    :return: (list) Noisy signal
+    """
+    if len(signal) != len(noise):
+        raise Exception("ERROR: Signal Noise size mismatch")
+
+    if snr_or_ssnr == 'snr':
+        snr = calc_snr(signal, noise)
+        ratio = pow(10, (snr - dB) / 20)
+        noisy_signal = noise.copy()
+        for i in range(len(noise)):
+            noisy_signal[i] = noise[i] * ratio + signal[i]
+        return noisy_signal
+
+    elif snr_or_ssnr == 'ssnr':
+        if frame_size == None:
+            raise Exception("ERROR: ssnr must have frame_size")
+        ssnr = calc_ssnr(signal, noise, frame_size)
+        ratio = pow(10, (ssnr - dB) / 20)
+        noisy_signal = noise.copy()
+        for i in range(len(noise)):
+            noisy_signal[i] = noise[i] * ratio + signal[i]
         return noisy_signal
 
     else:
