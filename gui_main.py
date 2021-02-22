@@ -5,15 +5,15 @@ from tkinter import filedialog
 from tkinter import messagebox
 from tkinter import*
 import tkinter.ttk
-
+import platform
 
 # Generate window
 window = Tk()
 window.title("Noisy Audio Generator")
 window.geometry("450x300")
 window.resizable(True, False)
-window.iconbitmap("{}/gui_icon.ico".format(iof.load_path()))
-
+if platform.system() == 'Windows':
+    window.iconbitmap("{}/gui_icon.xbm".format(iof.load_path()))
 
 def select_source_file():
     source_entry.delete(0, END)
