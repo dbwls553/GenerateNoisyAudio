@@ -10,8 +10,8 @@ import tkinter.ttk
 # Generate window
 window = Tk()
 window.title("Noisy Audio Generator")
-window.geometry("400x300")
-window.resizable(False, False)
+window.geometry("450x300")
+window.resizable(True, False)
 window.iconbitmap("{}/gui_icon.ico".format(iof.load_path()))
 
 
@@ -27,12 +27,12 @@ def select_source_dir():
 # Source path select
 source_window = PanedWindow()
 source_window.pack(pady=5)
-Label(source_window, text='Source Path', width=9).pack(side=LEFT)
+Label(source_window, text='Source Path', width=11).pack(side=LEFT)
 source_entry = Entry(source_window, width=22)
 source_entry.pack(side=LEFT, padx=5)
 source_file_button = Button(source_window, text='Load File', command=select_source_file, width=7)
 source_file_button.pack(side=LEFT)
-source_dir_button = Button(source_window, text='Load Directory', command=select_source_dir, width=11)
+source_dir_button = Button(source_window, text='Load Directory', command=select_source_dir, width=12)
 source_dir_button.pack(side=LEFT)
 
 
@@ -48,12 +48,12 @@ def select_noise_dir():
 # Noise path select
 noise_window = PanedWindow()
 noise_window.pack(pady=5)
-Label(noise_window, text='Noise Path', width=9).pack(side=LEFT)
+Label(noise_window, text='Noise Path', width=11).pack(side=LEFT)
 noise_entry = Entry(noise_window, width=22)
 noise_entry.pack(side=LEFT, padx=5)
 noise_file_button = Button(noise_window, text='Load File', command=select_noise_file, width=7)
 noise_file_button.pack(side=LEFT)
-noise_dir_button = Button(noise_window, text='Load Directory', command=select_noise_dir, width=11)
+noise_dir_button = Button(noise_window, text='Load Directory', command=select_noise_dir, width=12)
 noise_dir_button.pack(side=LEFT)
 
 
@@ -65,10 +65,10 @@ def select_output_dir():
 # Output path select
 output_window = PanedWindow()
 output_window.pack(pady=5)
-Label(output_window, text='Output Path', width=9).pack(side=LEFT)
+Label(output_window, text='Output Path', width=11).pack(side=LEFT)
 output_entry = Entry(output_window, width=22)
 output_entry.pack(side=LEFT, padx=5)
-output_dir_button = Button(output_window, text='Load Directory', command=select_output_dir, width=19)
+output_dir_button = Button(output_window, text='Load Directory', command=select_output_dir, width=23)
 output_dir_button.pack(side=LEFT)
 
 
