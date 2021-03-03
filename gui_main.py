@@ -128,7 +128,7 @@ def main():
     target_dB = decibel_entry.get()
     if target_dB == '':
         raise Exception("ERROR: SNR or SSNR value is empty")
-    elif not target_dB.isdecimal():
+    elif not target_dB.isnumeric():
         raise Exception("ERROR: Selected SNR or SSNR is not a number")
     target_dB = float(target_dB)
 
