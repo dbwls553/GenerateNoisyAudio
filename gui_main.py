@@ -128,9 +128,12 @@ def main():
     target_dB = decibel_entry.get()
     if target_dB == '':
         raise Exception("ERROR: SNR or SSNR value is empty")
-    elif not target_dB.isnumeric():
-        raise Exception("ERROR: Selected SNR or SSNR is not a number")
-    target_dB = float(target_dB)
+    else:
+        try:
+            target_dB = float(target_dB)
+        except Exception:
+            raise Exception("ERROR: Selected SNR or SSNR is not a number")
+
 
     input_file_dir = source_entry.get()
     noise_file_dir = noise_entry.get()
