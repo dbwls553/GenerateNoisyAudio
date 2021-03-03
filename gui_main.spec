@@ -4,7 +4,7 @@ block_cipher = None
 
 
 a = Analysis(['gui_main.py'],
-             pathex=['C:\\Users\\유정찬\\PycharmProjects\\GenerateNoisyAudio'],
+             pathex=['C:\\Users\\ab552\\PycharmProjects\\GenerateNoisyAudio'],
              binaries=[],
              datas=[('./gui_icon.ico', '.')],
              hiddenimports=[],
@@ -23,7 +23,7 @@ exe = EXE(pyz,
           a.zipfiles,
           a.datas,
           [],
-          name='Noisy Audio Generator',
+          name='NoisyAudioGenerator',
           debug=False,
           bootloader_ignore_signals=False,
           strip=False,

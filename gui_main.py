@@ -13,7 +13,7 @@ window.title("Noisy Audio Generator")
 window.geometry("450x300")
 window.resizable(True, False)
 if platform.system() == 'Windows':
-    window.iconbitmap("{}/gui_icon.xbm".format(iof.load_path()))
+    window.iconbitmap("{}/gui_icon.ico".format(iof.load_path()))
 
 def select_source_file():
     source_entry.delete(0, END)
@@ -116,6 +116,7 @@ def main():
     generate_button['text'] = 'Processing...'
     window.update()
     snr_or_ssnr = snr_ssnr_radio_value.get()
+    frame_size = None
     if snr_or_ssnr == 'ssnr':
         frame_size = frame_size_entry.get()
         if frame_size_entry.get() == '':
